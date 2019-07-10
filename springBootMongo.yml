@@ -12,7 +12,8 @@ spec:
         name: springboot
     spec:
       containers:
-      - image: dockerhandson/spring-boot-mongo
+      - image: phanikumary1995/spring-boot-mongo
+        imagePullPolicy: Always
         name: springboot
         ports:
         - name: springboot
