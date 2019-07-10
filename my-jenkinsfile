@@ -1,0 +1,29 @@
+node
+{
+    stage('scm check out')
+    {
+        git credentialsId: 'GIT_CREDENTAILS', url: 'https://github.com/Yphanikumar5/spring-boot-mongo-docker.git',branch: 'master'
+    }
+    stage('mvn build')
+    {
+        def mavenhome = tool name: "M2_HOME" , type: "maven"
+        def mvncmd = "${mavenhome}/bin/mvn"
+        sh "${mvncmd} clean package"
+    }
+    stage('docker build')
+    {
+        sh 'docker build -t phanikumary1995/spring-boot-mongo .'
+    }
+    stage('docker push')
+    {
+        withCredentials([string(credentialsId: 'DOCKER_PASSWORD', variable: 'D_PASSWORD')]) 
+        {
+         sh 'docker login -u phanikumary1995 -p ${D_PASSWORD}'
+        }
+        sh 'docker push phanikumary1995/spring-boot-mongo '
+    }
+    stage('k8s deploy')
+    {
+        kubernetesDeploy configs: 'springBootMongo.yml', kubeConfig: [path: ''], kubeconfigId: 'K8S_CONFIG', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+    }
+}
