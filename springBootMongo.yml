@@ -12,7 +12,7 @@ spec:
         name: springboot
     spec:
       containers:
-      - image: phanikumary1995/test-app
+      - image: nethaji/test-app
         imagePullPolicy: Always
         name: springboot
         ports:
